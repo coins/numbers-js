@@ -1,7 +1,12 @@
-/*
-    Basic number theory using the native BigInt type
-*/
-
+/**
+ * Modular Exponentiation
+ * 
+ * @param {BigInt} a The base
+ * @param {BigInt} b The exponent
+ * @param {BigInt} n The modulus
+ * @return {BigInt} The exponentiation
+ *
+ */
 export function mod_exp(a, b, n) {
     a = a % n;
     let result = 1n;
@@ -22,6 +27,16 @@ export function mod_exp(a, b, n) {
     return result;
 }
 
+/**
+ * Extended Euclidean Algorithm
+ * 
+ * @param {BigInt} m The first number 
+ * @param {BigInt} n The second number
+ * @return [BigInt, BigInt, BigInt] 
+ *        a b Bézout coefficients 
+ *        d the greatest common divisor 
+ *
+ */
 export function egcd(m, n) {
     let a1 = 1n;
     let b1 = 0n;
@@ -46,6 +61,15 @@ export function egcd(m, n) {
     return [a, b, d];
 }
 
+
+/**
+ * Modular Inverse
+ * 
+ * @param {BigInt} The number
+ * @param {BigInt} The modulus
+ * @return {BigInt} The inverse
+ *
+ */
 export function mod_inv(x, n) {
     const [a, b, g] = egcd(x, n)
     if (g != 1n)
