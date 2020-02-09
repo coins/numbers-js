@@ -1,1 +1,1 @@
-export * './src/numbers.js'
+export * from './src/numbers.js'
