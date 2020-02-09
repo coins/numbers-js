@@ -1,31 +1,3 @@
-/**
- * Modular Exponentiation
- * 
- * @param {BigInt} a The base
- * @param {BigInt} b The exponent
- * @param {BigInt} n The modulus
- * @return {BigInt} The exponentiation
- *
- */
-export function mod_exp(a, b, n) {
-    a = a % n;
-    let result = 1n;
-    let x = a;
-
-    while (b > 0) {
-        const leastSignificantBit = b % 2n;
-        b = b / 2n;
-
-        if (leastSignificantBit == 1n) {
-            result = result * x;
-            result = result % n;
-        }
-
-        x = x * x;
-        x = x % n;
-    }
-    return result;
-}
 
 /**
  * Extended Euclidean Algorithm
@@ -65,14 +37,57 @@ export function egcd(m, n) {
 /**
  * Modular Inverse
  * 
- * @param {BigInt} The number
- * @param {BigInt} The modulus
- * @return {BigInt} The inverse
+ * @param {BigInt} x - The number
+ * @param {BigInt} m - The modulus
+ * @return {BigInt} The inverse of x
  *
  */
-export function mod_inv(x, n) {
-    const [a, b, g] = egcd(x, n)
+export function mod_inv(x, m) {
+    const [a, b, g] = egcd(x, m)
     if (g != 1n)
         throw 'Inverse doesn\'t exist'
     return a
+}
+
+/**
+ * Modular Exponentiation
+ * 
+ * @param {BigInt} a The base
+ * @param {BigInt} b The exponent
+ * @param {BigInt} m The modulus
+ * @return {BigInt} The exponentiation
+ *
+ */
+export function mod_exp(a, b, m) {
+    a = a % m;
+    let result = 1n;
+    let x = a;
+
+    while (b > 0) {
+        const leastSignificantBit = b % 2n;
+        b = b / 2n;
+
+        if (leastSignificantBit == 1n) {
+            result = result * x;
+            result = result % m;
+        }
+
+        x = x * x;
+        x = x % m;
+    }
+    return result;
+}
+
+/**
+ * Modular Square Root
+ * 
+ * @param {BigInt} x The number
+ * @param {BigInt} p The prime modulus
+ * @return {BigInt} The square root of x
+ *
+ */
+export function mod_sqrt(x, p) {
+    // TODO: implement other square root algorithms
+    if (p % 4n !== 3n) throw 'Square root algorithm for (p mod 4 == 3) not implemented yet'
+    return mod_exp(x, (p + 1n) / 4n, p)
 }
