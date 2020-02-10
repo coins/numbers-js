@@ -1,4 +1,3 @@
-
 /**
  * Extended Euclidean Algorithm
  * 
@@ -59,24 +58,22 @@ export function mod_inv(x, m) {
  *
  */
 export function mod_exp(a, b, m) {
-    a = a % m;
-    let result = 1n;
-    let x = a;
+    a = a % m
+    let result = 1n
+    let x = a
 
     while (b > 0) {
-        const leastSignificantBit = b % 2n;
-        b = b / 2n;
-
-        if (leastSignificantBit == 1n) {
-            result = result * x;
-            result = result % m;
+        if (b & 1n) { // read the least significant bit
+            result = result * x % m
         }
 
-        x = x * x;
-        x = x % m;
+        b >>= 1n // cut off the least significant
+        x = x * x % m
     }
-    return result;
+    return result
 }
+
+
 
 /**
  * Modular Square Root
@@ -88,6 +85,6 @@ export function mod_exp(a, b, m) {
  */
 export function mod_sqrt(x, p) {
     // TODO: implement other square root algorithms
-    if ( (p % 4n) !== 3n) throw 'Square root algorithm for (p mod 4 == 1) not implemented yet'
+    if ((p % 4n) !== 3n) throw 'Square root algorithm for (p mod 4 == 1) not implemented yet'
     return mod_exp(x, (p + 1n) / 4n, p)
 }
