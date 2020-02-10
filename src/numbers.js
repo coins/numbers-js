@@ -88,6 +88,6 @@ export function mod_exp(a, b, m) {
  */
 export function mod_sqrt(x, p) {
     // TODO: implement other square root algorithms
-    if (p % 4n !== 3n) throw 'Square root algorithm for (p mod 4 == 3) not implemented yet'
+    if (p % 4n !== 3n) throw 'Square root algorithm for (p mod 4 == 1) not implemented yet'
     return mod_exp(x, (p + 1n) / 4n, p)
 }
