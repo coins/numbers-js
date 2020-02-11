@@ -1,4 +1,3 @@
-import './jasmine-3.5.0/boot.js'
 import { mod_exp, mod_inv, mod_sqrt, egcd } from '../numbers.js'
 
 describe('The numbers library', function() {
