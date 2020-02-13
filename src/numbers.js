@@ -34,18 +34,22 @@ export function egcd(m, n) {
 
 
 /**
- * Modular Inverse
+ * !!Prime modulus!! Modular Inverse
  * 
  * @param {BigInt} x - The number
  * @param {BigInt} m - The modulus
  * @return {BigInt} The inverse of x
- *
+ * 
  */
 export function mod_inv(x, m) {
-    const [a, b, g] = egcd(x, m)
-    if (g != 1n)
-        throw 'Inverse doesn\'t exist'
-    return a
+    // TODO: fix mod_inv for composite m
+    // 
+    // const [a, b, g] = egcd(x, m)
+    // if (g != 1n)
+    //     throw Error('Inverse doesn\'t exist '+g)
+    // return a
+    // console.warn('mod_inv works only for prime fields')
+    return mod_exp(x, m - 2n, m)
 }
 
 /**
@@ -85,6 +89,6 @@ export function mod_exp(a, b, m) {
  */
 export function mod_sqrt(x, p) {
     // TODO: implement other square root algorithms
-    if ((p % 4n) !== 3n) throw 'Square root algorithm for (p mod 4 == 1) not implemented yet'
+    if ((p % 4n) !== 3n) throw Error('Square root algorithm for (p mod 4 == 1) not implemented yet')
     return mod_exp(x, (p + 1n) / 4n, p)
 }
