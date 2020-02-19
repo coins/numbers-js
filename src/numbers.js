@@ -64,15 +64,14 @@ export function mod_inv(x, m) {
 export function mod_exp(a, b, m) {
     a = a % m
     let result = 1n
-    let x = a
 
     while (b > 0) {
         if (b & 1n) { // read the least significant bit
-            result = result * x % m
+            result = result * a % m
         }
 
         b >>= 1n // cut off the least significant
-        x = x * x % m
+        a = a * a % m
     }
     return result
 }

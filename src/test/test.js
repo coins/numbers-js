@@ -31,3 +31,6 @@ describe('The numbers library', function() {
     })
 
 })
+
+
+import '../bigint-polyfill/test.js'
