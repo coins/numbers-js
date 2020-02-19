@@ -123,13 +123,5 @@ describe('The bigint polyfill', function() {
         expect(result).toBe('0x030c1194adcab3aea0d6e1399b3ed5e00755ac148f3bae801f9b65aadead3e9d4')
     })
 
-    it('can compute modular square root', function() {
-        const modulus = 103n
-        expect(mod_sqrt(0n, modulus)).toBe(0n)
-        expect(mod_sqrt(32n, modulus)).toBe(49n)
-        expect(mod_sqrt(3n, modulus)).toBe(93n)
-    })
-
-
 
 })

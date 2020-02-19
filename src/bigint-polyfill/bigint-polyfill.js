@@ -1,8 +1,13 @@
+/**
+ * Finite Field Arithmetic
+ */
+
 export function fromHex(n) {
     // remove trailing "0x"
     n = n.replace(/^0x/, '')
 
     // little endian conversion
+    // The least significant bit should be the lowest.
     n = n.split('').reverse()
 
     // cast to number
@@ -13,47 +18,55 @@ export function toHex(n) {
     return '0x' + n.map(x => x.toString(16)).reverse().join('')
 }
 
+export function toBinary(n) {
+    n = n.map(m => m.toString(2).padStart(4, '0').split('').map(Number).reverse())
+    n = n.flat()
+    return n
+}
+
 export function add(a, b) {
-    const c = []
-    let z = 0
-    let i = 0
-    for (; i < Math.max(a.length, b.length); i++) {
-        const x = a[i] || 0
-        const y = b[i] || 0
-        const z0 = (x + y + z)
-        c[i] = z0 % 16
-        z = (z0 / 16) ^ 0 // integer division
+    const result = []
+    let carryOver = 0
+    let length = Math.max(a.length, b.length)
+    for (let i = 0; i < length; i++) {
+        const a_i = a[i] || 0
+        const b_i = b[i] || 0
+        const sum = (a_i + b_i + carryOver)
+        if (sum > 15) {
+            result[i] = sum - 16
+            carryOver = 1
+        } else {
+            result[i] = sum
+            carryOver = 0
+        }
     }
-    if (z) {
-        c[i] = z
+    if (carryOver) {
+        result[length] = carryOver
     }
-    return c
+    return result
 }
 
 export function sub(a, b) {
-    const c = []
-    let z = 0
-    let i = 0
-    for (; i < Math.max(a.length, b.length); i++) {
+    const result = []
+    let carryOver = 0
+    let length = Math.max(a.length, b.length)
+    for (let i = 0; i < length; i++) {
         const x = a[i] || 0
-        const y = (b[i] || 0) + z
+        const y = (b[i] || 0) + carryOver
         if (x >= y) {
-            c[i] = x - y
-            z = 0
+            result[i] = x - y
+            carryOver = 0
         } else {
-            c[i] = 16 + x - y
-            z = 1
+            result[i] = 16 + x - y
+            carryOver = 1
         }
     }
-    if (z) {
-        c[i] = z
-    }
-    return c
+    return result
 }
 
 export function greater(a, b) {
-    const l = Math.max(a.length, b.length) - 1
-    for (let i = l; i >= 0; i--) {
+    const length = Math.max(a.length, b.length) - 1
+    for (let i = length; i >= 0; i--) {
         const x = a[i] || 0
         const y = b[i] || 0
         if (x > y) return true
@@ -62,45 +75,37 @@ export function greater(a, b) {
     return false
 }
 
-export function mod_add(a, b, p) {
-    let c = add(a, b)
-    while (greater(c, p)) {
-        c = sub(c, p)
+export function mod_add(a, b, modulus) {
+    let result = add(a, b)
+    if (greater(result, modulus)) { // TODO: Fix this for larger inputs
+        result = sub(result, modulus)
     }
-    return c
+    return result
 }
 
-export function to_binary(n) {
-    n = n.map(m => m.toString(2).padStart(4, '0').split('').map(Number).reverse())
-    n = n.flat()
-    return n
-}
-
-export function mod_mul(a, b, p) {
-
+export function mod_mul(a, b, modulus) {
+    b = toBinary(b)
     let result = []
 
-    b = to_binary(b)
     for (let i = 0; i < b.length; i++) {
         if (b[i]) {
-            result = mod_add(result, a, p)
+            result = mod_add(result, a, modulus)
         }
-        a = mod_add(a, a, p)
+        a = mod_add(a, a, modulus)
     }
 
     return result
 }
 
-export function mod_exp(a, b, p) {
-
+export function mod_exp(a, b, modulus) {
+    b = toBinary(b)
     let result = [1]
 
-    b = to_binary(b)
     for (let i = 0; i < b.length; i++) {
         if (b[i]) {
-            result = mod_mul(result, a, p)
+            result = mod_mul(result, a, modulus)
         }
-        a = mod_mul(a, a, p)
+        a = mod_mul(a, a, modulus)
     }
 
     return result
