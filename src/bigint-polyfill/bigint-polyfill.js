@@ -77,7 +77,7 @@ export function greater(a, b) {
 
 export function mod_add(a, b, modulus) {
     let result = add(a, b)
-    if (greater(result, modulus)) { // TODO: Fix this for larger inputs
+    if (greater(result, modulus)) { // TODO: Here's a bug for a + b > 2 * modulus
         result = sub(result, modulus)
     }
     return result
@@ -109,4 +109,9 @@ export function mod_exp(a, b, modulus) {
     }
 
     return result
+}
+
+export function mod_inv(a, modulus) {
+    const exp = sub(modulus, fromHex('0x02'))
+    return mod_exp(a, exp, modulus)
 }

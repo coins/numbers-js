@@ -1,4 +1,4 @@
-import { fromHex, toHex, add, sub, mod_add, mod_mul, mod_exp  } from './bigint-polyfill.js'
+import { fromHex, toHex, add, sub, mod_add, mod_mul, mod_exp, mod_inv } from './bigint-polyfill.js'
 
 describe('The bigint polyfill', function() {
 
@@ -123,5 +123,15 @@ describe('The bigint polyfill', function() {
         expect(result).toBe('0x030c1194adcab3aea0d6e1399b3ed5e00755ac148f3bae801f9b65aadead3e9d4')
     })
 
+    it('can compute modular inverse', function() {
+        const a = fromHex('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC')
+        const p = fromHex('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F')
+
+        const inv = mod_inv(a, p)
+
+        const result = toHex(mod_mul(a, inv, p))
+
+        expect(result).toBe('0x00000000000000000000000000000000000000000000000000000000000000001')
+    })
 
 })
