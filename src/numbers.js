@@ -34,7 +34,20 @@ export function egcd(m, n) {
 
 
 /**
- * !!Prime modulus!! Modular Inverse
+ * Modular absolute value. Every value becomes positive.
+ * 
+ * @param {BigInt} x The element
+ * @return {BigInt} The element's absolute value.
+ *
+ */
+export function mod_abs(x, m) {
+    while (x < 0)
+        x = (m + x) % m
+    return x
+}
+
+/**
+ * Modular Inverse
  * 
  * @param {BigInt} x - The number
  * @param {BigInt} m - The modulus
@@ -42,14 +55,11 @@ export function egcd(m, n) {
  * 
  */
 export function mod_inv(x, m) {
-    // TODO: fix mod_inv for composite m
-    // 
-    // const [a, b, g] = egcd(x, m)
-    // if (g != 1n)
-    //     throw Error('Inverse doesn\'t exist '+g)
-    // return a
-    // console.warn('mod_inv works only for prime fields')
-    return mod_exp(x, m - 2n, m)
+    x = mod_abs(x, m)
+    const [a, b, g] = egcd(x, m)
+    if (g != 1n)
+        throw Error(`Inverse of ${x} doesn\'t exist mod ${m}`)
+    return a
 }
 
 /**
@@ -62,7 +72,7 @@ export function mod_inv(x, m) {
  *
  */
 export function mod_exp(a, b, m) {
-    a = a % m
+    a = mod_abs(a, m)
     let result = 1n
 
     while (b > 0) {
@@ -75,7 +85,6 @@ export function mod_exp(a, b, m) {
     }
     return result
 }
-
 
 
 /**
