@@ -34,7 +34,8 @@ export function egcd(m, n) {
 
 
 /**
- * Modular absolute value. Every value becomes positive.
+ * Modular absolute value. 
+ * Adds the modulus until the value becomes positive.
  * 
  * @param {BigInt} x The element
  * @return {BigInt} The element's absolute value.
@@ -65,13 +66,16 @@ export function mod_inv(x, m) {
 /**
  * Modular Exponentiation
  * 
- * @param {BigInt} a The base
- * @param {BigInt} b The exponent
- * @param {BigInt} m The modulus
+ * @param {BigInt} a - The base
+ * @param {BigInt} b - The exponent (must be positive)
+ * @param {BigInt} m - The modulus
  * @return {BigInt} The exponentiation
  *
  */
 export function mod_exp(a, b, m) {
+    if (b < 0n)
+        throw Error(`Exponent must be positive`)
+
     a = mod_abs(a, m)
     let result = 1n
 
@@ -97,6 +101,7 @@ export function mod_exp(a, b, m) {
  */
 export function mod_sqrt(x, p) {
     // TODO: implement other square root algorithms
-    if ((p % 4n) !== 3n) throw Error('Square root algorithm for (p mod 4 == 1) not implemented yet')
+    if ((p % 4n) !== 3n) 
+        throw Error('Square root algorithm for (p mod 4 == 1) not implemented yet')
     return mod_exp(x, (p + 1n) / 4n, p)
 }
