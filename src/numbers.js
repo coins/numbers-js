@@ -114,7 +114,7 @@ function legendre_symbol(a, p) {
  * http://en.wikipedia.org/wiki/Tonelli-Shanks_algorithm
  * 
  */
-function sqrt(a, p) {
+function mod_sqrt(a, p) {
     if (!p || p < 0n )
         throw Error(`p must be a positive prime number`)
 
