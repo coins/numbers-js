@@ -100,9 +100,9 @@ export function mod_exp(a, b, m) {
  * 
  */
 function legendre_symbol(a, p) {
-    ls = mod_exp(a, (p - 1) / 2, p)
-    if (ls == p - 1)
-        return -1
+    ls = mod_exp(a, (p - 1n) / 2n, p)
+    if (ls == p - 1n)
+        return -1n
     return ls
 }
 
@@ -115,57 +115,57 @@ function legendre_symbol(a, p) {
  * 
  */
 function sqrt(a, p) {
-    if (!p || p < 0 )
+    if (!p || p < 0n )
         throw Error(`p must be a positive prime number`)
 
     a = abs(a,p)
 
     // Simple case
-    if (a == 0)
+    if (a == 0n)
         return [0]
-    if (p == 2)
+    if (p == 2n)
         return [a]
 
     // Check solution existence on odd prime
-    if (legendre_symbol(a, p) != 1)
+    if (legendre_symbol(a, p) != 1n)
         throw Error(`There is no square root of ${a} mod ${p}`)
 
     // Simple case
-    if (p % 4 == 3) {
-        const x = mod_exp(a, (p + 1) / 4, p)
+    if (p % 4n == 3n) {
+        const x = mod_exp(a, (p + 1n) / 4n, p)
         return [x, p - x]
     }
 
     // Factor p-1 on the form q * 2^s (with Q odd)
-    [q, s] = [p - 1, 0]
-    while (q % 2 == 0) {
-        s += 1
-        q /= 2
+    [q, s] = [p - 1n, 0]
+    while (q % 2n == 0n) {
+        s += 1n
+        q /= 2n
     }
 
 
     // Select a z which is a quadratic non residue modulo p
-    let z = 1
-    while (legendre_symbol(z, p) != -1) {
-        z += 1
+    let z = 1n
+    while (legendre_symbol(z, p) != -1n) {
+        z += 1n
     }
     let c = mod_exp(z, q, p)
 
     // Search for a solution
-    let x = mod_exp(a, (q + 1) / 2, p)
+    let x = mod_exp(a, (q + 1n) / 2n, p)
     let t = mod_exp(a, q, p)
     let m = s
-    while (t != 1) {
+    while (t != 1n) {
         // Find the lowest i such that t^(2^i) = 1
-        let [i, e] = [1, 2]
-        for (i = 1; i < m; i++) {
-            if (mod_exp(t, e, p) == 1)
+        let [i, e] = [1n, 2n]
+        for (i = 1n; i < m; i++) {
+            if (mod_exp(t, e, p) == 1n)
                 break
-            e *= 2
+            e *= 2n
         }
 
         // Update next value to iterate
-        let b = mod_exp(c, 2 ** (m - i - 1) % (p - 1), p)
+        let b = mod_exp(c, 2n ** (m - i - 1n) % (p - 1n), p)
         x = (x * b) % p
         t = (t * b * b) % p
         c = (b * b) % p
