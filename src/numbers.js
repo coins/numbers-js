@@ -91,17 +91,86 @@ export function mod_exp(a, b, m) {
 }
 
 
+
 /**
- * Modular Square Root
  * 
- * @param {BigInt} x The number
- * @param {BigInt} p The prime modulus
- * @return {BigInt} The square root of x
- *
+ * Legendre symbol 
+ * Define if a is a quadratic residue modulo odd prime 
+ * http://en.wikipedia.org/wiki/Legendre_symbol
+ * 
  */
-export function mod_sqrt(x, p) {
-    // TODO: implement other square root algorithms
-    if ((p % 4n) !== 3n) 
-        throw Error('Square root algorithm for (p mod 4 == 1) not implemented yet')
-    return mod_exp(x, (p + 1n) / 4n, p)
+function legendre_symbol(a, p) {
+    ls = mod_exp(a, (p - 1) / 2, p)
+    if (ls == p - 1)
+        return -1
+    return ls
+}
+
+/**
+ *
+ * Square root modulo prime number  
+ * Solve the equation 
+ * x^2 = a mod p and return list of x solutions 
+ * http://en.wikipedia.org/wiki/Tonelli-Shanks_algorithm
+ * 
+ */
+function sqrt(a, p) {
+    if (!p || p < 0 )
+        throw Error(`p must be a positive prime number`)
+
+    a = abs(a,p)
+
+    // Simple case
+    if (a == 0)
+        return [0]
+    if (p == 2)
+        return [a]
+
+    // Check solution existence on odd prime
+    if (legendre_symbol(a, p) != 1)
+        throw Error(`There is no square root of ${a} mod ${p}`)
+
+    // Simple case
+    if (p % 4 == 3) {
+        const x = mod_exp(a, (p + 1) / 4, p)
+        return [x, p - x]
+    }
+
+    // Factor p-1 on the form q * 2^s (with Q odd)
+    [q, s] = [p - 1, 0]
+    while (q % 2 == 0) {
+        s += 1
+        q /= 2
+    }
+
+
+    // Select a z which is a quadratic non residue modulo p
+    let z = 1
+    while (legendre_symbol(z, p) != -1) {
+        z += 1
+    }
+    let c = mod_exp(z, q, p)
+
+    // Search for a solution
+    let x = mod_exp(a, (q + 1) / 2, p)
+    let t = mod_exp(a, q, p)
+    let m = s
+    while (t != 1) {
+        // Find the lowest i such that t^(2^i) = 1
+        let [i, e] = [1, 2]
+        for (i = 1; i < m; i++) {
+            if (mod_exp(t, e, p) == 1)
+                break
+            e *= 2
+        }
+
+        // Update next value to iterate
+        let b = mod_exp(c, 2 ** (m - i - 1) % (p - 1), p)
+        x = (x * b) % p
+        t = (t * b * b) % p
+        c = (b * b) % p
+        m = i
+    }
+
+    return [x, p - x]
 }
